@@ -11,7 +11,7 @@
 
 ## The Problem Nobody Is Solving
 
-In January 2026, Vishal Sikka — former CTO of SAP, CEO of Infosys, Stanford PhD who studied under John McCarthy (the man who coined "Artificial Intelligence") — published a paper with his son titled **"Hallucination Stations: On Some Basic Limitations of Transformer-Based Language Models."**
+In 2025, Vishal Sikka — former CTO of SAP, CEO of Infosys, Stanford PhD who studied under John McCarthy (the man who coined "Artificial Intelligence") — published a paper with his son titled **"Hallucination Stations: On Some Basic Limitations of Transformer-Based Language Models."**
 
 Their finding, grounded in 60-year-old complexity theory:
 
