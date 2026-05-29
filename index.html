@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRI — Skill-based Reasoning Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #020202;
+    --white: #f5f0e8;
+    --gold: #c9a84c;
+    --gold-dim: #7a5f28;
+    --red: #c0392b;
+    --green: #1a6b3a;
+    --surface: #0d0d0d;
+    --border: rgba(201,168,76,0.15);
+    --text-dim: rgba(245,240,232,0.4);
+    --text-mid: rgba(245,240,232,0.7);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 60%, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* SRI CHAKRA SVG BG */
+  .chakra-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 700px;
+    opacity: 0.04;
+    animation: slowSpin 120s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes slowSpin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+    animation: fadeDown 1s ease both;
+  }
+
+  .nav-logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+  }
+
+  .nav-logo span {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    display: block;
+    letter-spacing: 0.3em;
+    margin-top: 2px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* HERO CENTER */
+  .hero-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    gap: 2rem;
+    padding: 4rem 0;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    animation: fadeUp 1s 0.2s ease both;
+    border: 1px solid var(--border);
+    padding: 0.4rem 1.2rem;
+    display: inline-block;
+  }
+
+  .hero-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(5rem, 15vw, 12rem);
+    line-height: 0.9;
+    color: var(--white);
+    animation: fadeUp 1s 0.4s ease both;
+    position: relative;
+  }
+
+  .hero-title .sri-gold {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .hero-title .devanagari {
+    display: block;
+    font-size: 0.35em;
+    color: var(--gold);
+    opacity: 0.6;
+    letter-spacing: 0.1em;
+    margin-top: 0.2em;
+  }
+
+  .hero-sub {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--text-mid);
+    max-width: 600px;
+    line-height: 1.6;
+    animation: fadeUp 1s 0.6s ease both;
+    font-weight: 400;
+  }
+
+  .hero-sub em {
+    color: var(--white);
+    font-style: normal;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    animation: fadeUp 1s 0.8s ease both;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    padding: 0.85rem 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: var(--white);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-mid);
+    padding: 0.85rem 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* TICKER */
+  .ticker {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    padding: 0.7rem 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  .ticker-inner {
+    display: flex;
+    gap: 4rem;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .ticker-item span { color: var(--gold); margin-right: 0.5rem; }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* SECTION BASE */
+  section {
+    padding: 8rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 60px;
+  }
+
+  /* PROBLEM SECTION */
+  .problem-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8rem 2rem;
+  }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .problem-text h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    color: var(--white);
+  }
+
+  .problem-text h2 em {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .problem-text p {
+    color: var(--text-mid);
+    line-height: 1.8;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .problem-text p strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .quote-block {
+    border-left: 2px solid var(--gold);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    background: rgba(201,168,76,0.04);
+  }
+
+  .quote-block p {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--white) !important;
+    line-height: 1.6;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .quote-block cite {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  /* COLLAPSE VISUALIZER */
+  .collapse-viz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+  }
+
+  .viz-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+  }
+
+  .complexity-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .bar-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 60px;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.65rem;
+  }
+
+  .bar-name { color: var(--text-dim); letter-spacing: 0.1em; }
+
+  .bar-track {
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+  }
+
+  .bar-fill.green { background: var(--green); }
+  .bar-fill.gold { background: var(--gold); }
+  .bar-fill.red { background: var(--red); }
+  .bar-fill.dead { background: rgba(192,57,43,0.3); }
+
+  .bar-score {
+    color: var(--text-dim);
+    font-size: 0.6rem;
+    text-align: right;
+  }
+
+  .bar-score.green { color: #2ecc71; }
+  .bar-score.gold { color: var(--gold); }
+  .bar-score.red { color: var(--red); }
+  .bar-score.dead { color: rgba(192,57,43,0.5); }
+
+  .ceiling-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--red);
+    opacity: 0.6;
+  }
+
+  .ceiling-label {
+    font-size: 0.55rem;
+    color: var(--red);
+    letter-spacing: 0.15em;
+    margin-top: 1rem;
+    text-align: right;
+    opacity: 0.7;
+  }
+
+  /* HOW IT WORKS */
+  .how-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8rem 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .how-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 5rem;
+    align-items: end;
+  }
+
+  .how-header h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+  }
+
+  .how-header h2 em { color: var(--gold); font-style: italic; }
+
+  .how-header p {
+    color: var(--text-mid);
+    font-size: 0.85rem;
+    line-height: 1.8;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  .steps-grid::before {
+    content: '';
+    position: absolute;
+    top: 2.5rem;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), var(--gold-dim), transparent);
+    opacity: 0.4;
+  }
+
+  .step {
+    padding: 2rem 1.5rem;
+    border: 1px solid var(--border);
+    border-right: none;
+    position: relative;
+    transition: background 0.3s;
+    cursor: default;
+  }
+
+  .step:last-child { border-right: 1px solid var(--border); }
+
+  .step:hover {
+    background: rgba(201,168,76,0.04);
+    border-color: rgba(201,168,76,0.3);
+    z-index: 1;
+  }
+
+  .step-num {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-bottom: 3rem;
+    display: block;
+  }
+
+  .step-icon {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .step h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .step p {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .step-tag {
+    display: inline-block;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    margin-top: 1rem;
+    text-transform: uppercase;
+  }
+
+  /* STACK SECTION */
+  .stack-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8rem 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 4rem;
+    background: var(--border);
+  }
+
+  .stack-card {
+    background: var(--black);
+    padding: 3rem 2.5rem;
+    transition: background 0.3s;
+  }
+
+  .stack-card:hover { background: var(--surface); }
+
+  .stack-card-icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .stack-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--white);
+  }
+
+  .stack-card p {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+
+  .stack-card .pill {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.8rem;
+    display: inline-block;
+  }
+
+  /* ORIGIN SECTION */
+  .origin-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8rem 2rem;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .origin-text h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.2;
+    margin-bottom: 2rem;
+  }
+
+  .origin-text h2 em { color: var(--gold); font-style: italic; }
+
+  .origin-text p {
+    font-size: 0.8rem;
+    color: var(--text-mid);
+    line-height: 1.9;
+    margin-bottom: 1.2rem;
+  }
+
+  .origin-stat {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    margin-top: 3rem;
+  }
+
+  .stat-box {
+    background: var(--surface);
+    padding: 2rem;
+  }
+
+  .stat-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* TERMINAL */
+  .terminal {
+    background: #050505;
+    border: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    overflow: hidden;
+  }
+
+  .terminal-bar {
+    background: var(--surface);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #febc2e; }
+  .dot.g { background: #28c840; }
+
+  .terminal-title {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-left: auto;
+  }
+
+  .terminal-body { padding: 1.5rem; line-height: 2; }
+
+  .t-dim { color: var(--text-dim); }
+  .t-gold { color: var(--gold); }
+  .t-green { color: #2ecc71; }
+  .t-red { color: var(--red); }
+  .t-white { color: var(--white); }
+
+  /* CTA SECTION */
+  .cta-section {
+    text-align: center;
+    padding: 10rem 2rem;
+    border-top: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: 'श्री';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Instrument Serif', serif;
+    font-size: 30vw;
+    color: rgba(201,168,76,0.03);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .cta-section h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-section h2 em { color: var(--gold); font-style: italic; }
+
+  .cta-section p {
+    color: var(--text-mid);
+    font-size: 0.85rem;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: 'Instrument Serif', serif;
+    color: var(--gold);
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-text {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+
+  @media (max-width: 768px) {
+    .problem-grid, .how-header, .origin-section { grid-template-columns: 1fr; gap: 2rem; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .step:nth-child(2) { border-right: 1px solid var(--border); }
+    .step:nth-child(4) { border-right: 1px solid var(--border); }
+    .steps-grid::before { display: none; }
+    .stack-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hero-title { font-size: clamp(4rem, 20vw, 8rem); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+
+  <!-- Sri Chakra SVG Background -->
+  <svg class="chakra-bg" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="250" cy="250" r="240" stroke="#c9a84c" stroke-width="0.5"/>
+    <circle cx="250" cy="250" r="220" stroke="#c9a84c" stroke-width="0.3"/>
+    <circle cx="250" cy="250" r="180" stroke="#c9a84c" stroke-width="0.5"/>
+    <circle cx="250" cy="250" r="140" stroke="#c9a84c" stroke-width="0.3"/>
+    <circle cx="250" cy="250" r="100" stroke="#c9a84c" stroke-width="0.5"/>
+    <circle cx="250" cy="250" r="60" stroke="#c9a84c" stroke-width="0.3"/>
+    <!-- triangles pointing up -->
+    <polygon points="250,60 440,380 60,380" stroke="#c9a84c" stroke-width="0.4" fill="none"/>
+    <polygon points="250,80 420,370 80,370" stroke="#c9a84c" stroke-width="0.3" fill="none"/>
+    <polygon points="250,100 400,360 100,360" stroke="#c9a84c" stroke-width="0.4" fill="none"/>
+    <polygon points="250,120 380,350 120,350" stroke="#c9a84c" stroke-width="0.3" fill="none"/>
+    <!-- triangles pointing down -->
+    <polygon points="250,440 60,120 440,120" stroke="#c9a84c" stroke-width="0.4" fill="none"/>
+    <polygon points="250,420 80,130 420,130" stroke="#c9a84c" stroke-width="0.3" fill="none"/>
+    <polygon points="250,400 100,140 400,140" stroke="#c9a84c" stroke-width="0.4" fill="none"/>
+    <polygon points="250,380 120,150 380,150" stroke="#c9a84c" stroke-width="0.3" fill="none"/>
+  </svg>
+
+  <nav>
+    <div class="nav-logo">
+      SRI
+      <span>श्री · skill-based reasoning intelligence</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#problem">The Problem</a></li>
+      <li><a href="#how">How it Works</a></li>
+      <li><a href="#stack">Stack</a></li>
+      <li><a href="https://github.com/SRIKARNANDAGIRI/sri" target="_blank">GitHub ↗</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero-center">
+    <div class="hero-eyebrow">Open Source · v0.1 · Building in Public</div>
+    <h1 class="hero-title">
+      <span class="sri-gold">SRI</span>
+      <span class="devanagari">श्री</span>
+    </h1>
+    <p class="hero-sub">
+      Every AI agent has a <em>mathematical ceiling</em> it cannot cross.<br>
+      SRI is the first framework built to work around it.
+    </p>
+    <div class="hero-cta">
+      <a href="https://github.com/SRIKARNANDAGIRI/sri" target="_blank" class="btn-primary">★ Star on GitHub</a>
+      <a href="#problem" class="btn-secondary">Understand the Problem</a>
+    </div>
+  </div>
+
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span class="ticker-item"><span>◆</span> Decompose · Simulate · Verify · Learn</span>
+      <span class="ticker-item"><span>◆</span> Built on Sikka et al. 2025</span>
+      <span class="ticker-item"><span>◆</span> Powered by MiroFish + Hermes</span>
+      <span class="ticker-item"><span>◆</span> Human-verified AI workflows</span>
+      <span class="ticker-item"><span>◆</span> Open Source · MIT License</span>
+      <span class="ticker-item"><span>◆</span> Skill-based Reasoning Intelligence</span>
+      <span class="ticker-item"><span>◆</span> Decompose · Simulate · Verify · Learn</span>
+      <span class="ticker-item"><span>◆</span> Built on Sikka et al. 2025</span>
+      <span class="ticker-item"><span>◆</span> Powered by MiroFish + Hermes</span>
+      <span class="ticker-item"><span>◆</span> Human-verified AI workflows</span>
+      <span class="ticker-item"><span>◆</span> Open Source · MIT License</span>
+      <span class="ticker-item"><span>◆</span> Skill-based Reasoning Intelligence</span>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM SECTION -->
+<div id="problem" class="problem-section">
+  <div class="problem-grid">
+    <div class="problem-text reveal">
+      <div class="section-label">The Ceiling Problem</div>
+      <h2>AI has a <em>hard limit.</em><br>It's not a bug.</h2>
+      <p>
+        In 2025, Vishal Sikka — former CTO of SAP, CEO of Infosys, Stanford PhD who studied under
+        <strong>John McCarthy</strong> (the man who coined "Artificial Intelligence") — published a paper proving it formally.
+      </p>
+      <div class="quote-block">
+        <p>"For any task whose verification complexity exceeds what one forward pass can compute — the model cannot tell a good output from a bad one."</p>
+        <cite>— Sikka & Sikka, Hallucination Stations (2025)</cite>
+      </div>
+      <p>
+        Apple's research team confirmed it independently. Frontier reasoning models like o3 don't just
+        perform worse at high complexity — their accuracy drops to <strong>zero.</strong>
+        And they reduce reasoning effort right when the problem gets hardest.
+      </p>
+      <p>
+        This is why autonomous AI businesses keep failing.
+        This is why agents hallucinate at the worst possible moment.
+        <strong>This is the ceiling everyone is pretending doesn't exist.</strong>
+      </p>
+    </div>
+
+    <div class="reveal" style="transition-delay: 0.2s;">
+      <div class="collapse-viz">
+        <div class="viz-label">AI Accuracy vs. Task Complexity</div>
+        <div class="complexity-bars" id="bars">
+          <div class="bar-row">
+            <span class="bar-name">Simple</span>
+            <div class="bar-track"><div class="bar-fill green" data-width="94"></div></div>
+            <span class="bar-score green">94%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name">Medium</span>
+            <div class="bar-track"><div class="bar-fill gold" data-width="71"></div></div>
+            <span class="bar-score gold">71%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name">Complex</span>
+            <div class="bar-track" style="position:relative">
+              <div class="bar-fill red" data-width="23"></div>
+              <div class="ceiling-line" style="left: 60%;"></div>
+            </div>
+            <span class="bar-score red">23%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name">High</span>
+            <div class="bar-track"><div class="bar-fill dead" data-width="4"></div></div>
+            <span class="bar-score dead">4%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name">Agentic</span>
+            <div class="bar-track"><div class="bar-fill dead" data-width="1"></div></div>
+            <span class="bar-score dead">~0%</span>
+          </div>
+        </div>
+        <div class="ceiling-label">↑ complexity ceiling — system collapses</div>
+      </div>
+
+      <div class="terminal" style="margin-top: 2px;">
+        <div class="terminal-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="terminal-title">sri_demo.py</span>
+        </div>
+        <div class="terminal-body">
+          <div><span class="t-dim">$</span> <span class="t-gold">python</span> <span class="t-white">sri_demo.py</span></div>
+          <div><span class="t-dim">→ goal:</span> <span class="t-white">"Run Q3 client reports"</span></div>
+          <div><span class="t-dim">→ decomposed into</span> <span class="t-gold">7 atomic steps</span></div>
+          <div><span class="t-dim">→ simulating step 3 via MiroFish...</span></div>
+          <div><span class="t-green">✓ simulation passed</span></div>
+          <div><span class="t-dim">→ human gate:</span> <span class="t-white">approve? [y/n]</span> <span class="t-gold">y</span></div>
+          <div><span class="t-green">✓ skill saved to Hermes</span></div>
+          <div><span class="t-green">✓ outcome delivered. ceiling never hit.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div id="how" class="how-section">
+  <div class="how-header reveal">
+    <h2>Four steps.<br><em>No ceiling.</em></h2>
+    <p>SRI doesn't raise the ceiling. It redesigns the workflow so you never reach it. Every complex goal flows through four layers — each one keeping AI operating in the zone where it is provably reliable.</p>
+  </div>
+
+  <div class="steps-grid">
+    <div class="step reveal">
+      <span class="step-num">01 —</span>
+      <span class="step-icon">⬡</span>
+      <h3>Decompose</h3>
+      <p>Every goal is broken into atomic steps, each budgeted to stay below the complexity threshold. No single AI call ever handles more than it can reliably process.</p>
+      <span class="step-tag">Core Engine</span>
+    </div>
+    <div class="step reveal" style="transition-delay:0.1s">
+      <span class="step-num">02 —</span>
+      <span class="step-icon">◎</span>
+      <h3>Simulate</h3>
+      <p>Before acting, MiroFish spawns thousands of independent agents to simulate the consequence. Catch strategic errors before they happen in the real world.</p>
+      <span class="step-tag">MiroFish</span>
+    </div>
+    <div class="step reveal" style="transition-delay:0.2s">
+      <span class="step-num">03 —</span>
+      <span class="step-icon">◻</span>
+      <h3>Verify</h3>
+      <p>Deterministic checks on every output before the next step runs. The verifier enforces the contract between steps — no hallucination compounds.</p>
+      <span class="step-tag">Verifier</span>
+    </div>
+    <div class="step reveal" style="transition-delay:0.3s">
+      <span class="step-num">04 —</span>
+      <span class="step-icon">△</span>
+      <h3>Gate</h3>
+      <p>Human approval before high-stakes actions. Not a limitation — the feature that makes SRI safe to run on real operations. Automate the routine. Escalate the important.</p>
+      <span class="step-tag">Human Gate</span>
+    </div>
+    <div class="step reveal" style="transition-delay:0.4s">
+      <span class="step-num">05 —</span>
+      <span class="step-icon">∞</span>
+      <h3>Learn</h3>
+      <p>Every approved workflow is written as a persistent skill via Hermes. The system compounds. It never re-learns what it already knows. Intelligence that grows.</p>
+      <span class="step-tag">Hermes</span>
+    </div>
+  </div>
+</div>
+
+<!-- STACK -->
+<div id="stack" class="stack-section">
+  <div class="section-label reveal">The Stack</div>
+  <div class="stack-grid">
+    <div class="stack-card reveal">
+      <div class="stack-card-icon">⬡</div>
+      <h3>MiroFish</h3>
+      <p>Swarm intelligence engine that spawns thousands of AI agents with independent personalities and memory. SRI uses it not to predict the future — but to simulate the consequence of a single decision before taking it.</p>
+      <span class="pill">Simulation Layer</span>
+    </div>
+    <div class="stack-card reveal" style="transition-delay:0.15s">
+      <div class="stack-card-icon">∞</div>
+      <h3>Hermes Agent</h3>
+      <p>Persistent skill-based AI agent by Nous Research. Every problem solved becomes a skill document stored permanently. In SRI, every approved workflow becomes a Hermes skill — the system gets smarter every time it succeeds.</p>
+      <span class="pill">Skill Memory</span>
+    </div>
+    <div class="stack-card reveal" style="transition-delay:0.3s">
+      <div class="stack-card-icon">◻</div>
+      <h3>Human Gate</h3>
+      <p>The layer everyone else removed. SRI builds it in as a first-class primitive. Every major AI framework races toward zero human involvement. The Sikka math says that's why they fail. The gate is not a bottleneck — it's the guarantee.</p>
+      <span class="pill">Trust Layer</span>
+    </div>
+  </div>
+</div>
+
+<!-- ORIGIN -->
+<div class="origin-section">
+  <div class="origin-text reveal">
+    <div class="section-label">Origin</div>
+    <h2>Built by a student who <em>refused</em> to accept the ceiling.</h2>
+    <p>SRI began with a video. A student in India watched Vishal Sikka explain a 60-year-old theorem that proved why every AI agent eventually hallucinates — and immediately asked: can we solve this?</p>
+    <p>One hour later, the repo existed. Built with AI tools, directed by human insight. The same way Tony Stark built the suit.</p>
+    <p>The idea is simple: if the ceiling exists per AI call, never make a call that hits it. Decompose every goal until every piece fits. Verify every output. Let humans approve what matters. Never re-learn what you already know.</p>
+    <div class="origin-stat">
+      <div class="stat-box">
+        <span class="stat-num">1hr</span>
+        <span class="stat-label">From idea to repo</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">$0</span>
+        <span class="stat-label">Cost to start</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">v0.1</span>
+        <span class="stat-label">Building in public</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">∞</span>
+        <span class="stat-label">Ceiling bypassed</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal" style="transition-delay:0.2s">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="terminal-title">git log --oneline</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-gold">a1b2c3d</span> <span class="t-white">docs: add SRI manifesto README</span></div>
+        <div><span class="t-gold">e4f5g6h</span> <span class="t-white">chore: add repo structure</span></div>
+        <div><span class="t-dim"># Phase 1 — Core framework</span></div>
+        <div><span class="t-dim"># [ ] Task decomposer</span></div>
+        <div><span class="t-dim"># [ ] Verifier layer</span></div>
+        <div><span class="t-dim"># [ ] Human gate CLI</span></div>
+        <div><span class="t-dim">#</span></div>
+        <div><span class="t-dim"># Phase 2 — Integrations</span></div>
+        <div><span class="t-dim"># [ ] Hermes skills</span></div>
+        <div><span class="t-dim"># [ ] MiroFish simulation</span></div>
+        <div><span class="t-dim">#</span></div>
+        <div><span class="t-green"># Watch this repo. It's just getting started.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>The ceiling is <em>real.</em><br>So is the solution.</h2>
+  <p>SRI is being built in public. Star the repo and build with us.</p>
+  <div class="cta-buttons">
+    <a href="https://github.com/SRIKARNANDAGIRI/sri" target="_blank" class="btn-primary">★ Star on GitHub</a>
+    <a href="https://github.com/SRIKARNANDAGIRI/sri/discussions" target="_blank" class="btn-secondary">Join the Discussion</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">SRI · श्री</div>
+  <span class="footer-text">Skill-based Reasoning Intelligence · MIT License · Built in public</span>
+  <ul class="footer-links">
+    <li><a href="https://github.com/SRIKARNANDAGIRI/sri" target="_blank">GitHub</a></li>
+    <li><a href="https://arxiv.org/abs/2507.07505" target="_blank">Paper</a></li>
+    <li><a href="https://github.com/SRIKARNANDAGIRI/sri/blob/main/docs/the_ceiling_problem.md" target="_blank">Docs</a></li>
+  </ul>
+</footer>
+
+<script>
+  // Intersection Observer for reveal animations
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Animate bars when visible
+  const barsSection = document.getElementById('bars');
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.bar-fill').forEach((bar, i) => {
+          setTimeout(() => {
+            bar.style.width = bar.dataset.width + '%';
+          }, i * 200);
+        });
+        barObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+  barObserver.observe(barsSection);
+</script>
+</body>
+</html>
