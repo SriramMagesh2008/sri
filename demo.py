@@ -2,10 +2,14 @@ import os
 import json
 from groq import Groq
 
-# Initialize Groq client
-from dotenv import load_dotenv
-load_dotenv()
-client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+api_key = os.environ.get("GROQ_API_KEY")
+if not api_key:
+    print("\n❌ GROQ_API_KEY not found!")
+    print("👉 Get your free key at: console.groq.com")
+    print("👉 Create a .env file with: GROQ_API_KEY=your_key_here")
+    print("👉 See README.md for setup instructions\n")
+    exit(1)
+client = Groq(api_key=api_key)
 
 def decompose_goal(goal):
     """Break a complex goal into atomic steps using LLM"""
