@@ -8,6 +8,19 @@ class VerifyResult:
     checks_failed: list
     message: str
 
+def print_verify_result(result):
+    colors = {
+        "PASS": "\033[92m",
+        "WARN": "\033[93m",
+        "FAIL": "\033[91m"
+    }
+
+    reset = "\033[0m"
+    color = colors.get(result.status, "")
+
+    print(f"{color}{result.status}{reset}")
+    print(result.message)
+
 
 def verify_step_output(step, output: str) -> VerifyResult:
     passed = []
@@ -23,7 +36,13 @@ def verify_step_output(step, output: str) -> VerifyResult:
     else:
         failed.append("min_length_20")
 
-    banned = ["as an ai", "i cannot", "i am unable"]
+    banned = [
+        "as an ai",
+        "i cannot",
+        "i am unable",
+        "i don't have access",
+        "i apologize"
+    ]
     if not any(b in output.lower() for b in banned):
         passed.append("no_hallucination_phrases")
     else:
